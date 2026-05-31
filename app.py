@@ -22,6 +22,7 @@ import plotly.graph_objects as go
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from typing import Optional
+import time
 
 # ─────────────────────────────────────────────
 # CONFIGURACIÓN DE PÁGINA
@@ -720,7 +721,17 @@ def main():
         top_momentum_ticker = top_row["Ticker"]
         top_momentum_delta  = f"+{top_row['Δ Menciones 24h %']:.0f}% menciones"
 
-    ts = datetime.now().strftime("%H:%M · %d %b %Y")
+    # Timestamp siempre en tiempo real (fuera de caché)
+    now = datetime.now()
+    ts_hora  = now.strftime("%H:%M")
+    ts_fecha = now.strftime("%d %b %Y")
+
+    # Auto-refresco cada 5 minutos (300s) — recalcula hora y rerun de Streamlit
+    # Usamos un meta-refresh HTML invisible para no añadir dependencias extra
+    st.markdown(
+        '<meta http-equiv="refresh" content="300">',
+        unsafe_allow_html=True,
+    )
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
@@ -747,8 +758,8 @@ def main():
     with c4:
         st.markdown(metric_card_html(
             "Última Actualización",
-            ts.split("·")[0].strip(),
-            ts.split("·")[1].strip() if "·" in ts else "",
+            ts_hora,
+            ts_fecha,
             "#A78BFA"
         ), unsafe_allow_html=True)
 
