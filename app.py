@@ -23,6 +23,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from typing import Optional
 import time
+from zoneinfo import ZoneInfo
 
 # ─────────────────────────────────────────────
 # CONFIGURACIÓN DE PÁGINA
@@ -722,7 +723,7 @@ def main():
         top_momentum_delta  = f"+{top_row['Δ Menciones 24h %']:.0f}% menciones"
 
     # Timestamp siempre en tiempo real (fuera de caché)
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Europe/Madrid"))
     ts_hora  = now.strftime("%H:%M")
     ts_fecha = now.strftime("%d %b %Y")
 
