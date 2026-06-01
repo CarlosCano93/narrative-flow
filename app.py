@@ -339,8 +339,8 @@ def fetch_apewisdom(
     rows = []
     for item in results:
         ticker = item.get("ticker", "").upper().strip()
-        mentions = item.get("mentions", 0)
-        mentions_24h = item.get("mentions_24h_ago", 0)
+        mentions = int(item.get("mentions", 0))
+        mentions_24h = int(item.get("mentions_24h_ago", 0))
         rank = item.get("rank", 0)
         rank_24h = item.get("rank_24h_ago", 0)
 
@@ -352,10 +352,10 @@ def fetch_apewisdom(
         # Las menciones de ayer pueden ser bajas (eso genera el Δ% alto que buscamos).
         # Pero también descartamos casos absurdos: ayer=0 con hoy=2 no es señal.
         # Umbral mínimo en menciones actuales para garantizar base estadística real.
-        if mentions and int(mentions) < min_mentions:
+        if mentions < min_mentions:
             continue
         # Descartar también si ayer era 0 o 1 (Δ% matemáticamente inflado sin sentido)
-        if mentions_24h and int(mentions_24h) < 2:
+        if mentions_24h < 2:
             continue
 
         # Calcular velocidad de crecimiento de menciones (Δ%)
